@@ -105,19 +105,19 @@ def checkSeats(varCourse):
     if t.group(1) == '0':
       return 0
   else:
-    print "Can't locate seats"
+    print "Error: Can't locate number of seats."
 
   if g:
     if g.group(1) != '0':
       return 1
   else:
-    print "Can't locate seats"
+    print "Error: Can't locate number of seats."
     
   if r:
     if r.group(1) != '0':
       return 2
   else:
-    print "Can't locate seats"
+    print "Error: Can't locate number of seats."
 
 # Search pattern (compiled for efficiency)
 totalSeats = re.compile("<td width=200px>Total Seats Remaining:</td>" + "<td align=left><strong>(.*?)</strong></td>")
