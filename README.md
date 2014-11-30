@@ -1,6 +1,6 @@
-<h1>UBC Course Check</h>
+<h1>UBC Course Checker</h>
 
-<p>UBC Course Check works to determine the number of remaining seats available in a course. The script can then either register in the course automatically or simply notify (open the course link).</p>
+<p>UBC Course Checker works to determine the number of remaining seats available in a course. The script can then either register in the course automatically or simply notify (open the course link).</p>
 <p>To minimize the need to install extra modules like mechanize or requests for people who may not be tech-savy, only libraries that are already part of Python's Standard Library are included.</p>
 
 <h2>Usage</h>
