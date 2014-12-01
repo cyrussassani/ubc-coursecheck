@@ -4,6 +4,7 @@ import cookielib
 import re
 import time
 import webbrowser
+from random import randrange
 
 # Notify that a course is available
 def notify():
@@ -12,7 +13,8 @@ def notify():
 
 # Delay to prevent sending too many requests
 def wait(varDelay):
-  time.sleep(varDelay) 
+  randDelay = delay + int(randrange(11))
+  time.sleep(randDelay) 
 
 # Automatically registers in the course
 def autoRegister():
@@ -145,8 +147,8 @@ sect = re.search(sectionPattern, courseURL)
 registerURL = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&submit=Register%20Selected&wldel=' + dept.group(1) + '|' + course.group(1) + '|' + sect.group(1)
 
 # Prevent too fast of a search rate/DOSing the website
-if delay < 10:
-  delay = 10
+if delay < 15:
+  delay = 15
 
 print ("Scanning seat availablility...")
 
