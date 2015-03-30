@@ -81,9 +81,11 @@ def autoRegister():
   resp2 = urllib2.urlopen(req2)
 
   loginURL = "https://courses.students.ubc.ca/cs/secure/login"
-
+  summerURL = 'https://courses.students.ubc.ca/cs/main?sessyr=2015&sesscd=S'
   # Perform login and registration
   urllib2.urlopen(loginURL)
+  if season =='S':
+  	urllib2.urlopen(summerURL)
   register = urllib2.urlopen(registerURL)
   respReg = register.read()
   print("Course Registered.")
@@ -128,6 +130,8 @@ restrictedSeats = re.compile("<td width=200px>Restricted Seats Remaining\*:</td>
 
 # Get course parameters
 courseURL = raw_input("Enter course + section link:")
+season = raw_input("Summer course (y/n):")
+year = raw_input("Term year (2015/2016/2017/...):")
 acceptRestricted = raw_input("Allowed restricted seating? (y/n)")
 delay = int(raw_input("Check every _ seconds?"))
 register = raw_input("Autoregister when course available? (y/n)")
@@ -144,7 +148,13 @@ dept = re.search(deptPattern, courseURL)
 course = re.search(coursePattern, courseURL)
 sect = re.search(sectionPattern, courseURL)
 
-registerURL = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&submit=Register%20Selected&wldel=' + dept.group(1) + '|' + course.group(1) + '|' + sect.group(1)
+if season == 'y':
+  season = 'S'
+else:
+  season = 'W'
+
+registerURL = 'https://courses.students.ubc.ca/cs/main?sessyr=' + year + '&sesscd=' + season + '&pname=subjarea&tname=subjareas&submit=Register%20Selected&wldel=' + dept.group(1) + '|' + course.group(1) + '|' + sect.group(1)
+courseURL = 'https://courses.students.ubc.ca/cs/main?sessyr=' + year + '&sesscd=' + season + '&pname=subjarea&tname=subjareas&req=5&dept=' + dept.group(1) + '&course=' + course.group(1) +'&section=' + sect.group(1)
 
 # Prevent too fast of a search rate/DOSing the website
 if delay < 15:
