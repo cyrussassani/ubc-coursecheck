@@ -81,7 +81,7 @@ def autoRegister():
   resp2 = urllib2.urlopen(req2)
 
   loginURL = "https://courses.students.ubc.ca/cs/secure/login"
-  summerURL = 'https://courses.students.ubc.ca/cs/main?sessyr=2015&sesscd=S'
+  summerURL = 'https://courses.students.ubc.ca/cs/main?sessyr={year}&sesscd=S'.format(year=year)
   # Perform login and registration
   urllib2.urlopen(loginURL)
   if season =='S':
