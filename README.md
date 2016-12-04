@@ -5,7 +5,7 @@ UBC Course Checker works to determine the number of remaining seats available in
 To minimize the need to install extra modules like mechanize or requests for people who may not be tech-savy, only libraries that are already part of Python's Standard Library are included.
 
 ## Usage
-The script requires python 2.7 to run so make sure you have that installed.
+The script supports both python 2.7 and python 3.5.
 
 Save the code into a file called ubcCourseChecker.py
 

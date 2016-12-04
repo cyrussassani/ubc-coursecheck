@@ -1,6 +1,20 @@
-import urllib
-import urllib2
-import cookielib
+try:
+  from http.cookiejar import CookieJar
+except ImportError:
+  from cookielib import CookieJar
+
+try:
+  input = raw_input
+except NameError:
+  pass
+
+try:
+  from urllib.request import HTTPCookieProcessor, build_opener, install_opener, Request, urlopen
+  from urllib.parse import urlencode
+except ImportError:
+  from urllib2 import HTTPCookieProcessor, build_opener, install_opener, Request, urlopen
+  from urllib import urlencode
+
 import re
 import time
 import webbrowser
@@ -19,14 +33,14 @@ def wait(varDelay):
 # Automatically registers in the course
 def autoRegister():
   # Cookie / Opener holder
-  cj = cookielib.CookieJar()
-  opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+  cj = CookieJar()
+  opener = build_opener(HTTPCookieProcessor(cj))
 
   # Login Header
   opener.addheaders = [('User-agent', 'UBC-Login')]
 
   # Install opener
-  urllib2.install_opener(opener)
+  install_opener(opener)
 
   # Form POST URL
   postURL = "https://cas.id.ubc.ca/ubc-cas/login/"
@@ -42,14 +56,14 @@ def autoRegister():
     }
 
   # Encode form data
-  data = urllib.urlencode(formData)
+  data = urlencode(formData).encode('UTF-8')
 
   # First request object
-  req = urllib2.Request(postURL, data)
+  req = Request(postURL, data)
 
   # Submit request and read data
-  resp = urllib2.urlopen(req)
-  respRead = resp.read()
+  resp = urlopen(req)
+  respRead = resp.read().decode('utf-8')
 
   # Find the ticket number
   ticket = "<input type=\"hidden\" name=\"lt\" value=\"(.*?)\" />"
@@ -74,19 +88,19 @@ def autoRegister():
   postURL2 = "https://cas.id.ubc.ca/ubc-cas/login;jsessionid=" + j.group(1)
 
   # Encode form data
-  data2 = urllib.urlencode(formData2)
+  data2 = urlencode(formData2).encode('UTF-8')
 
   # Submit request
-  req2 = urllib2.Request(postURL2, data2)
-  resp2 = urllib2.urlopen(req2)
+  req2 = Request(postURL2, data2)
+  resp2 = urlopen(req2)
 
   loginURL = "https://courses.students.ubc.ca/cs/secure/login"
-  summerURL = 'https://courses.students.ubc.ca/cs/main?sessyr=2015&sesscd=S'
+  summerURL = 'https://courses.students.ubc.ca/cs/main?sessyr={year}&sesscd=S'.format(year=year)
   # Perform login and registration
-  urllib2.urlopen(loginURL)
+  urlopen(loginURL)
   if season =='S':
-  	urllib2.urlopen(summerURL)
-  register = urllib2.urlopen(registerURL)
+  	urlopen(summerURL)
+  register = urlopen(registerURL)
   respReg = register.read()
   print("Course Registered.")
   webbrowser.open_new('https://ssc.adm.ubc.ca/sscportal/')
@@ -96,8 +110,8 @@ def autoRegister():
 def checkSeats(varCourse):
 
   url = varCourse
-  ubcResp = urllib.urlopen(url);
-  ubcPage = ubcResp.read();
+  ubcResp = urlopen(url);
+  ubcPage = ubcResp.read().decode('utf-8');
 
   # Search for the seat number element
   t = re.search(totalSeats, ubcPage)
@@ -109,19 +123,19 @@ def checkSeats(varCourse):
     if t.group(1) == '0':
       return 0
   else:
-    print "Error: Can't locate number of seats."
+    print ("Error: Can't locate number of seats.")
 
   if g:
     if g.group(1) != '0':
       return 1
   else:
-    print "Error: Can't locate number of seats."
+    print ("Error: Can't locate number of seats.")
     
   if r:
     if r.group(1) != '0':
       return 2
   else:
-    print "Error: Can't locate number of seats."
+    print ("Error: Can't locate number of seats.")
 
 # Search pattern (compiled for efficiency)
 totalSeats = re.compile("<td width=200px>Total Seats Remaining:</td>" + "<td align=left><strong>(.*?)</strong></td>")
@@ -129,15 +143,15 @@ generalSeats = re.compile("<td width=200px>General Seats Remaining:</td>" + "<td
 restrictedSeats = re.compile("<td width=200px>Restricted Seats Remaining\*:</td>" + "<td align=left><strong>(.*?)</strong></td>")
 
 # Get course parameters
-courseURL = raw_input("Enter course + section link:")
-season = raw_input("Summer course (y/n):")
-year = raw_input("Term year (2015/2016/2017/...):")
-acceptRestricted = raw_input("Allowed restricted seating? (y/n)")
-delay = int(raw_input("Check every _ seconds?"))
-register = raw_input("Autoregister when course available? (y/n)")
+courseURL = input("Enter course + section link:")
+season = input("Summer course (y/n):")
+year = input("Term year (2015/2016/2017/...):")
+acceptRestricted = input("Allowed restricted seating? (y/n):")
+delay = int(input("Check every _ seconds?"))
+register = input("Autoregister when course available? (y/n):")
 if register == "y":
-  cwl_user = raw_input("CWL Username:")
-  cwl_pass = raw_input("CWL Password:")
+  cwl_user = input("CWL Username:")
+  cwl_pass = input("CWL Password:")
 
 # Extract department, course #, and section #
 deptPattern = 'dept=(.*?)&'
